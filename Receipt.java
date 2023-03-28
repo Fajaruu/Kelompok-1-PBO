@@ -7,7 +7,6 @@ public class Receipt extends Exception {
         Menu m = new Menu();
         Pembayaran pb = new Pembayaran();
         m.displayMenu();
-
         //member
         System.out.println("Apakah pelanggan member (Y/N)?");
         String input = sc.nextLine();
@@ -22,13 +21,12 @@ public class Receipt extends Exception {
 
             PelangganMember pme = new PelangganMember(namaDepan, namaBelakang, lamaMember);
             pme.makeOrder();
-//            System.out.print("\nNomor Pesanan : ");
-            sc.nextLine();
+            System.out.print("\nNomor Pesanan : ");
+            int nomorPesanan = sc.nextInt();
             System.out.println("\n=========================");
             System.out.print("Jumlah pesanan : ");
             int jumlahPesan = sc.nextInt();
             pme.setJumlahPesanan(jumlahPesan);
-            int nomorPesanan = jumlahPesan;
 
             System.out.println("=========================");
             PesananCafe[] pc = new PesananCafe[jumlahPesan];
@@ -44,8 +42,20 @@ public class Receipt extends Exception {
                 System.out.println("(1 = Makanan || 2 = Minuman)");
                 System.out.print("Jenis pesanan : ");
                 jenisPesan[i] = sc.nextLine();
-                System.out.print("Kode nama pesanan : ");
-                namaPesanan[i] = sc.nextLine();
+                //exception code try catch=========================================================== Exception
+                try {
+                    System.out.print("Kode nama pesanan : ");
+                    input = sc.nextLine();
+                    if (input.compareTo("1") < 0 || input.compareTo("6") > 0) {
+                        throw new Exception("Mohon Maaf Kode pesanan tidak tidak tertera dalam menu");
+                    }
+                    namaPesanan[i] = input;
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    System.exit(0);
+                }
+                //exception code try catch=========================================================== Exception
+
                 System.out.print("Jumlah Beli : ");
                 jumlahPesanan[i] = sc.nextInt();
                 System.out.print("Harga : ");
@@ -54,7 +64,6 @@ public class Receipt extends Exception {
                 pc[i] = new PesananCafe(jenisPesan[i], namaPesanan[i], hargaPesanan[i], jumlahPesanan[i]);
                 totalPesanan[i] = pc[i].getTotal();
             }
-
             System.out.println("\nCheck out? (Y/N)");
             sc.nextLine();
             String CO = sc.nextLine();
@@ -86,6 +95,7 @@ public class Receipt extends Exception {
                 Date da = new Date();
                 Date tanggalBerlaku = new Date(da.getTime() + (1000 * 120 * 120 * 60 * 1000L));
                 boolean berlakuSampai = da.before(tanggalBerlaku);
+
 
                 Applicable.PercentOffPromo diskonPersenOff = new Applicable.PercentOffPromo("CPKTW110", berlakuSampai, 50);
                 Applicable.CashBack diskonCB = new Applicable.CashBack("MSBRO999", berlakuSampai, 10000);
@@ -126,9 +136,9 @@ public class Receipt extends Exception {
                 System.out.print("Promo code : ");
                 String code = sc.nextLine();
 
-                Customer c = new Customer(pme.getFullName(), lamaMember);
-                Order o = new Order(totalSemua, 40000);
-                Order or = new Order(Integer.toString(Ong), Integer.toString(5000));
+                CustomerEligible c = new CustomerEligible(pme.getFullName(), lamaMember);
+                OrderEligible o = new OrderEligible(totalSemua, 40000);
+                OrderEligible or = new OrderEligible(Integer.toString(Ong), Integer.toString(5000));
                 Diskon d = new Diskon(code, berlakuSampai);
 
                 if (d.getPromoCode().equals("CPKTW110")) {
@@ -217,42 +227,35 @@ public class Receipt extends Exception {
                     System.out.println("Promo tidak ditemukan!");
                 }
 
-            System.out.println("\nPelanggan membayar? (Y/N)");
-            String byr = sc.nextLine();
-            if (byr.equals("Y")) {
-                System.out.print("Masukkan nomor pesanan: ");
-                int nomPesanan = sc.nextInt();
-                pb.setNomorPesanan(nomorPesanan);
-                pb.confirmPay(nomPesanan);
-                if (nomPesanan == nomorPesanan)
-                    pb.pay();
-            } else {
-                pb.setStatus(Pembayaran.StatusPesanan.UNPAID);
-                if (pb.getStatus() == Pembayaran.StatusPesanan.UNPAID)
-                    System.out.println("Status pembayaran : belum dibayar/UNPAID");
-            }
+                System.out.println("\nPelanggan membayar? (Y/N)");
+                String byr = sc.nextLine();
+                if (byr.equals("Y")) {
+                    System.out.print("Masukkan nomor pesanan: ");
+                    int nomPesanan = sc.nextInt();
+                    pb.setNomorPesanan(nomorPesanan);
+                    pb.confirmPay(nomPesanan);
+                    if (nomPesanan == nomorPesanan)
+                        pb.pay();
+                } else {
+                    pb.setStatus(Pembayaran.StatusPesanan.UNPAID);
+                    if (pb.getStatus() == Pembayaran.StatusPesanan.UNPAID)
+                        System.out.println("Status pembayaran : belum dibayar/UNPAID");
+                }
 
             } else if (CO.equals("N")) {
                 pb.setStatus(Pembayaran.StatusPesanan.CANCELED);
                 if (pb.getStatus() == Pembayaran.StatusPesanan.CANCELED)
                     System.out.println("Status pembayaran : dibatalkan/CANCELED");
-            } else {
-                try {
-                    CO.equals("Y");
-                    CO.equals("N");
-                } catch (Exception ex) {
-                    System.out.println(ex.getMessage());
-                }
             }
 
 
-        //BUKAN MEMBER
+            //BUKAN MEMBER
         } else if (input.equals("N")){
             System.out.print("\nNama depan : ");
             String namaDepan = sc.nextLine();
             System.out.print("Nama belakang : ");
             String namaBelakang = sc.nextLine();
-            sc.nextLine();
+
 
             Guest g = new Guest(namaDepan, namaBelakang);
             g.makeOrder();
@@ -277,8 +280,18 @@ public class Receipt extends Exception {
                 System.out.println("(1 = Makanan || 2 = Minuman)");
                 System.out.print("Jenis pesanan : ");
                 jenisPesan[i] = sc.nextLine();
-                System.out.print("Kode nama pesanan : ");
-                namaPesanan[i] = sc.nextLine();
+                //error exception==========================
+                try {
+                    System.out.print("Kode nama pesanan : ");
+                    input = sc.nextLine();
+                    if (input.compareTo("1") < 0 || input.compareTo("6") > 0) {
+                        throw new Exception("Mohon Maaf Kode pesanan tidak tertera dalam menu");
+                    }
+                    namaPesanan[i] = input;
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    System.exit(0);
+                }
                 System.out.print("Jumlah Beli : ");
                 jumlahPesanan[i] = sc.nextInt();
                 System.out.print("Harga : ");
@@ -287,14 +300,15 @@ public class Receipt extends Exception {
                 pc[i] = new PesananCafe(jenisPesan[i], namaPesanan[i], hargaPesanan[i], jumlahPesanan[i]);
                 totalPesanan[i] = pc[i].getTotal();
             }
-
             System.out.println("\nCheck out? (Y/N)");
             sc.nextLine();
             String CO = sc.nextLine();
             if (CO.equals("Y")) {
                 pes.checkOut();
+                System.out.println();
                 System.out.print("Harga ongkir : ");
                 int Ong = sc.nextInt();
+                System.out.println();
                 sc.nextLine();
                 System.out.println("=============================================================================");
                 System.out.println("No. Pesanan : " + nomorPesanan);

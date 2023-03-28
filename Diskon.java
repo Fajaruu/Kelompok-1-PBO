@@ -9,17 +9,18 @@ public class Diskon extends Promotion {
     }
 
     @Override
-    public boolean isCustomerEligible(Customer x) {
+    public boolean isCustomerEligible(CustomerEligible x) {
         return false;
     }
 
     @Override
-    public boolean isMinimumPriceEligible(Order x) {
+    public boolean isMinimumPriceEligible(OrderEligible x) {
         return false;
     }
 
     @Override
-    public boolean isShippingFeeEligible(Order x) {
+    public boolean isShippingFeeEligible(OrderEligible x) {
         return false;
     }
+
 }

@@ -1,8 +1,8 @@
-class Customer {
+class CustomerEligible {
     private String name;
     private int lamaJoin;
 
-    public Customer(String name, int lamaJoin) {
+    public CustomerEligible(String name, int lamaJoin) {
         this.name = name;
         this.lamaJoin = lamaJoin; //hari
     }
@@ -10,21 +10,20 @@ class Customer {
     public int getLamaJoin() {
         return lamaJoin;
     }
-
 }
 
-class Order {
+class OrderEligible {
     private int totHarga;
     private int minimumPrice;
     private int ongkir;
     private int minimumOngkir;
 
-    public Order(int totHarga, int minimumPrice) {
+    public OrderEligible(int totHarga, int minimumPrice) {
         this.totHarga = totHarga;
         this.minimumPrice = minimumPrice;
     }
 
-    public Order(String ongkir, String minimumOngkir) {
+    public OrderEligible(String ongkir, String minimumOngkir) {
         this.ongkir = Integer.parseInt(ongkir);
         this.minimumOngkir = Integer.parseInt(minimumOngkir);
     }
@@ -36,16 +35,15 @@ class Order {
     public int getOngkir() {
         return ongkir;
     }
-
 }
 
 public interface Applicable {
 
-    boolean isCustomerEligible(Customer x);
-    boolean isMinimumPriceEligible(Order x);
-    boolean isShippingFeeEligible(Order x);
+    boolean isCustomerEligible(CustomerEligible x);
+    boolean isMinimumPriceEligible(OrderEligible x);
+    boolean isShippingFeeEligible(OrderEligible x);
 
-    public class PercentOffPromo extends Promotion  {
+    class PercentOffPromo extends Promotion  {
         private double percentOff;
 
         public PercentOffPromo(String promoCode, boolean tanggalBerlaku, double percentOff) {
@@ -58,7 +56,7 @@ public interface Applicable {
         }
 
         @Override
-        public boolean isCustomerEligible(Customer x) {
+        public boolean isCustomerEligible(CustomerEligible x) {
             int lamaJoin = x.getLamaJoin();
             if (lamaJoin >= 30) { //hari
                 return true;
@@ -67,7 +65,7 @@ public interface Applicable {
         }
 
         @Override
-        public boolean isMinimumPriceEligible(Order x) {
+        public boolean isMinimumPriceEligible(OrderEligible x) {
             int hargaMinim = x.getMinimumPrice();
             if (hargaMinim >= 40000)
                 return true;
@@ -76,7 +74,7 @@ public interface Applicable {
         }
 
         @Override
-        public boolean isShippingFeeEligible(Order x) {
+        public boolean isShippingFeeEligible(OrderEligible x) {
             int hargaOngkir = x.getOngkir();
             if (hargaOngkir >= 5000)
                 return true;
@@ -88,9 +86,10 @@ public interface Applicable {
         public int getDiskon() {
             return (int) percentOff;
         }
+
     }
 
-    public class CashBack extends Promotion implements Applicable {
+     class CashBack extends Promotion implements Applicable {
         private double kembalianCashBack;
 
         public CashBack(String promoCode, boolean tanggalBerlaku, double kembalianCashBack) {
@@ -103,7 +102,7 @@ public interface Applicable {
         }
 
         @Override
-        public boolean isCustomerEligible(Customer x) {
+        public boolean isCustomerEligible(CustomerEligible x) {
             int lamaJoin = x.getLamaJoin();
             if (lamaJoin >= 30) { //hari
                 return true;
@@ -112,7 +111,7 @@ public interface Applicable {
         }
 
         @Override
-        public boolean isMinimumPriceEligible(Order x) {
+        public boolean isMinimumPriceEligible(OrderEligible x) {
             int hargaMinim = x.getMinimumPrice();
             if (hargaMinim >= 40000)
                 return true;
@@ -121,7 +120,7 @@ public interface Applicable {
         }
 
         @Override
-        public boolean isShippingFeeEligible(Order x) {
+        public boolean isShippingFeeEligible(OrderEligible x) {
             int hargaOngkir = x.getOngkir();
             if (hargaOngkir >= 10000)
                 return true;
@@ -135,9 +134,9 @@ public interface Applicable {
         }
 
 
-    }
+     }
 
-    public class ShippingFee extends Promotion implements Applicable {
+     class ShippingFee extends Promotion implements Applicable {
         private double ongkir;
 
         public ShippingFee(String promoCode, boolean tanggalBerlaku, double ongkir) {
@@ -154,7 +153,7 @@ public interface Applicable {
         }
 
         @Override
-        public boolean isCustomerEligible(Customer x) {
+        public boolean isCustomerEligible(CustomerEligible x) {
             int lamaJoin = x.getLamaJoin();
             if (lamaJoin >= 30) { //hari
                 return true;
@@ -163,7 +162,7 @@ public interface Applicable {
         }
 
         @Override
-        public boolean isMinimumPriceEligible(Order x) {
+        public boolean isMinimumPriceEligible(OrderEligible x) {
             int hargaMinim = x.getMinimumPrice();
             if (hargaMinim >= 40000)
                 return true;
@@ -172,7 +171,7 @@ public interface Applicable {
         }
 
         @Override
-        public boolean isShippingFeeEligible(Order x) {
+        public boolean isShippingFeeEligible(OrderEligible x) {
             int hargaOngkir = x.getOngkir();
             if (hargaOngkir >= 5000)
                 return true;
@@ -184,5 +183,6 @@ public interface Applicable {
         public int getDiskon() {
             return (int) ongkir;
         }
+
     }
 }

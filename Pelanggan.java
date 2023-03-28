@@ -27,8 +27,6 @@ public abstract class Pelanggan {
         }
     }
 
-
-
     public void setJumlahPesanan(int jumlahPesanan) {
         this.jumlahPesanan = jumlahPesanan;
     }

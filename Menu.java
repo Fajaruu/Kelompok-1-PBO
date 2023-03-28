@@ -1,6 +1,6 @@
 public class Menu extends PesananCafe {
     private String menuMakanan[][] = new String[5][5];
-    private String menuMinuman[][] = new String[2][2];
+    private String menuMinuman[][] = new String[5][5];
 
     public Menu() {
     }
@@ -22,7 +22,7 @@ public class Menu extends PesananCafe {
 
     public void menuMinuman() {
         System.out.println("\n================MENU MINUMAN====================");
-        String menuMinuman[][] = {{"1. Es Teh", "2000"}, {"2. Lemon Tea", "4000"}, {"3. Milo", "5000"}};
+        String menuMinuman[][] = {{"1. Es Teh", "2000"}, {"2. Lemon Tea", "4000"}, {"3. Milo", "5000"}, {"4. Boba", "8000"}, {"5. Red Velvet", "12000"}, {"6. Teh Tarik", "7000"}};
         this.menuMinuman = menuMinuman;
         for (int i = 0; i < menuMinuman.length; i++) {
             for (int j = 0; j < menuMinuman[i].length; j++) {
