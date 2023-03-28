@@ -1,6 +1,6 @@
 
 public abstract class Promotion implements Applicable, Comparable<Promotion> {
-    private String promoCode;
+        private String promoCode;
     private boolean tanggalBerlaku;
 
     public Promotion(String promoCode, boolean tanggalBerlaku) {
@@ -12,9 +12,14 @@ public abstract class Promotion implements Applicable, Comparable<Promotion> {
         return promoCode;
     }
 
-
     public int compareTo(Promotion x) {
-        return x.getDiskon() - this.getDiskon();
+        if (this.getDiskon() > x.getDiskon()) {
+            return -1;
+        } else if (this.getDiskon() == x.getDiskon()) {
+            return 0;
+        } else {
+            return 1;
+        }
     }
     public abstract int getDiskon();
 

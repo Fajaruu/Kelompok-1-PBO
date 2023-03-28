@@ -1,12 +1,13 @@
 import java.util.*;
 
-public class Receipt {
+public class Receipt extends Exception {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         PesananCafe pes = new PesananCafe();
         Menu m = new Menu();
         Pembayaran pb = new Pembayaran();
         m.displayMenu();
+
         //member
         System.out.println("Apakah pelanggan member (Y/N)?");
         String input = sc.nextLine();
@@ -21,12 +22,13 @@ public class Receipt {
 
             PelangganMember pme = new PelangganMember(namaDepan, namaBelakang, lamaMember);
             pme.makeOrder();
-            System.out.print("\nNomor Pesanan : ");
-            int nomorPesanan = sc.nextInt();
+//            System.out.print("\nNomor Pesanan : ");
+            sc.nextLine();
             System.out.println("\n=========================");
             System.out.print("Jumlah pesanan : ");
             int jumlahPesan = sc.nextInt();
             pme.setJumlahPesanan(jumlahPesan);
+            int nomorPesanan = jumlahPesan;
 
             System.out.println("=========================");
             PesananCafe[] pc = new PesananCafe[jumlahPesan];
@@ -85,49 +87,40 @@ public class Receipt {
                 Date tanggalBerlaku = new Date(da.getTime() + (1000 * 120 * 120 * 60 * 1000L));
                 boolean berlakuSampai = da.before(tanggalBerlaku);
 
-
                 Applicable.PercentOffPromo diskonPersenOff = new Applicable.PercentOffPromo("CPKTW110", berlakuSampai, 50);
-                double hargaPersenOff = diskonPersenOff.applyPromo(totalSemua);
                 Applicable.CashBack diskonCB = new Applicable.CashBack("MSBRO999", berlakuSampai, 10000);
-                double hargaCB = diskonCB.applyPromo(totalSemua);
-                Applicable.ShippingFee diskonOng = new Applicable.ShippingFee("HDEHH55", berlakuSampai, 3000);
-                double hargaFreeOng = diskonOng.applyPromo(totalSemua);
+                Applicable.ShippingFee diskonOng = new Applicable.ShippingFee("HDEHH55", berlakuSampai, 500000);
 
-                //Pake ArrayList
-                List<Promotion> promo = new ArrayList<>();
-                promo.add(new Applicable.PercentOffPromo("CPKTW110", berlakuSampai, 50)); //3
-                promo.add(new Applicable.CashBack("MSBRO999", berlakuSampai, 10000)); //2
-                promo.add(new Applicable.ShippingFee("HDEHHH555", berlakuSampai, 500000)); //2
-
-
-                Collections.sort(promo);
-
-                for (Promotion p : promo) {
-                    if (p.getPromoCode() == "CPKTW110") {
-                        System.out.println("Kode diskon : " + p.getPromoCode() + ", Potongan sebesar " + p.getDiskon() + "%");
-                    } else if (p.getPromoCode() == "MSBRO999") {
-                        System.out.println("Kode diskon : " + p.getPromoCode() + ", Potongan cash back sebesar " + p.getDiskon() + " ribu");
-                    } else if (p.getPromoCode() == "HDEHHH555") {
-                        System.out.println("Kode diskon : " + p.getPromoCode() + ", Potongan bebas ongkir sebesar " + p.getDiskon()/100 + " ribu");
+                System.out.println("Promo yang tersedia : ");
+                //comparable
+                if (diskonPersenOff.compareTo(diskonCB) > diskonCB.compareTo(diskonPersenOff) && diskonPersenOff.compareTo(diskonOng) > diskonOng.compareTo(diskonPersenOff)) {
+                    System.out.println("Promo 'CPKTW110', untuk potongan diskon 50%");
+                    if (diskonCB.compareTo(diskonOng) > diskonOng.compareTo(diskonCB)) {
+                        System.out.println("Promo 'MSBRO999', untuk potongan Cash Back");
+                        System.out.println("Promo 'HDEHHH555', untuk potongan ongkir");
+                    } else {
+                        System.out.println("Promo 'HDEHHH555' bebas ongkir");
+                        System.out.println("Promo 'MSBRO999' Cash Back");
+                    }
+                } else if (diskonCB.compareTo(diskonPersenOff) > diskonPersenOff.compareTo(diskonCB) && diskonCB.compareTo(diskonOng) > diskonOng.compareTo(diskonCB)) {
+                    System.out.println("Promo 'MSBRO999', untuk potongan Cash Back");
+                    if (diskonPersenOff.compareTo(diskonOng) > diskonOng.compareTo(diskonPersenOff)) {
+                        System.out.println("Promo 'CPKTW110', untuk potongan diskon 50%");
+                        System.out.println("Promo 'HDEHHH555', untuk potongan ongkir");
+                    } else {
+                        System.out.println("Promo 'HDEHHH555', untuk potongan ongkir");
+                        System.out.println("Promo 'CPKTW110', untuk potongan diskon 50%");
+                    }
+                } else if (diskonOng.compareTo(diskonPersenOff) > diskonPersenOff.compareTo(diskonOng) && diskonOng.compareTo(diskonCB) > diskonCB.compareTo(diskonOng)) {
+                    System.out.println("Promo 'HDEHHH555', untuk potongan ongkir");
+                    if (diskonPersenOff.compareTo(diskonCB) > diskonCB.compareTo(diskonPersenOff)) {
+                        System.out.println("Promo 'CPKTW110', untuk potongan diskon 50%");
+                        System.out.println("Promo 'MSBRO999', untuk potongan Cash Back");
+                    } else {
+                        System.out.println("Promo 'MSBRO999', untuk potongan Cash Back");
+                        System.out.println("Promo 'CPKTW110', untuk potongan diskon 50%");
                     }
                 }
-
-                //NGGAK PAKE ArrayList
-//                //dari yang paling besar ke paling kecil
-//                System.out.println("Diskon yang tersedia : ");
-//                if (Double.compare(hargaPersenOff, hargaCB) >= 0 && Double.compare(hargaPersenOff, hargaFreeOng) >= 0) {
-//                    System.out.println("Promo 'CPKTW110' diskon 50% : " + hargaPersenOff);
-//                    System.out.println("Promo 'MSBRO999' Cash Back : " + hargaCB);
-//                    System.out.println("Promo 'HDEHHH555' bebas ongkir : " + hargaFreeOng);
-//                } else if (Double.compare(hargaCB, hargaFreeOng) >= 0) {
-//                    System.out.println("Promo 'MSBRO999' Cash Back : " + hargaCB);
-//                    System.out.println("Promo 'CPKTW110' diskon 50% : " + hargaPersenOff);
-//                    System.out.println("Promo 'HDEHHH555' bebas ongkir : " + hargaFreeOng);
-//                } else {
-//                    System.out.println("Promo 'HDEHHH555' bebas ongkir : " + hargaFreeOng);
-//                    System.out.println("Promo 'MSBRO999' Cash Back : " + hargaCB);
-//                    System.out.println("Promo 'CPKTW110' diskon 50% : " + hargaPersenOff);
-//                }
 
                 System.out.println("\nGunakan Promo? ");
                 System.out.print("Promo code : ");
@@ -243,6 +236,13 @@ public class Receipt {
                 pb.setStatus(Pembayaran.StatusPesanan.CANCELED);
                 if (pb.getStatus() == Pembayaran.StatusPesanan.CANCELED)
                     System.out.println("Status pembayaran : dibatalkan/CANCELED");
+            } else {
+                try {
+                    CO.equals("Y");
+                    CO.equals("N");
+                } catch (Exception ex) {
+                    System.out.println(ex.getMessage());
+                }
             }
 
 
