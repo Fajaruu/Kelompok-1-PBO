@@ -1,5 +1,6 @@
 import java.util.Calendar;
 
+//kelas order
 public class PesananCafe {
     private String namaPesanan;
     private String jenisPesanan;
@@ -109,6 +110,8 @@ public class PesananCafe {
 
     public void checkOut() {
         System.out.println("Check out berhasil dilakukan!\n");
+
+
     }
 
     public static void getCurrentDate() {
