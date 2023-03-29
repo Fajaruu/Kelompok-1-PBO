@@ -1,6 +1,6 @@
 import java.util.*;
 
-public class Receipt extends Exception {
+public class Receipt {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         PesananCafe pes = new PesananCafe();
@@ -54,7 +54,6 @@ public class Receipt extends Exception {
                     System.out.println(e.getMessage());
                     System.exit(0);
                 }
-                //exception code try catch=========================================================== Exception
 
                 System.out.print("Jumlah Beli : ");
                 jumlahPesanan[i] = sc.nextInt();
@@ -101,48 +100,34 @@ public class Receipt extends Exception {
                 Applicable.CashBack diskonCB = new Applicable.CashBack("MSBRO999", berlakuSampai, 10000);
                 Applicable.ShippingFee diskonOng = new Applicable.ShippingFee("HDEHH55", berlakuSampai, 500000);
 
-                System.out.println("Promo yang tersedia : ");
-                //comparable
-                if (diskonPersenOff.compareTo(diskonCB) > diskonCB.compareTo(diskonPersenOff) && diskonPersenOff.compareTo(diskonOng) > diskonOng.compareTo(diskonPersenOff)) {
-                    System.out.println("Promo 'CPKTW110', untuk potongan diskon 50%");
-                    if (diskonCB.compareTo(diskonOng) > diskonOng.compareTo(diskonCB)) {
-                        System.out.println("Promo 'MSBRO999', untuk potongan Cash Back");
-                        System.out.println("Promo 'HDEHHH555', untuk potongan ongkir");
+
+                CustomerEligible c = new CustomerEligible(pme.getFullName(), lamaMember);
+                OrderEligible o = new OrderEligible(totalSemua, 40000);
+                OrderEligible or = new OrderEligible(Integer.toString(Ong), Integer.toString(5000));
+
+                System.out.println("List promo : ");
+
+                if (diskonPersenOff.isCustomerEligible(c) && diskonPersenOff.isMinimumPriceEligible(o) && diskonCB.isCustomerEligible(c) && diskonCB.isMinimumPriceEligible(o)) {
+                    //comparable
+                    if (diskonPersenOff.compareTo(diskonCB) > diskonCB.compareTo(diskonPersenOff) && diskonPersenOff.compareTo(diskonOng) > diskonOng.compareTo(diskonPersenOff)) {
+                        System.out.println("Promo 'CPKTW110', untuk potongan diskon 50%, tersedia");
+                        System.out.println("Promo 'MSBRO999', untuk potongan Cash Back, tersedia");
                     } else {
-                        System.out.println("Promo 'HDEHHH555' bebas ongkir");
-                        System.out.println("Promo 'MSBRO999' Cash Back");
+                        System.out.println("Promo 'MSBRO999', untuk potongan Cash Back, tersedia");
+                        System.out.println("Promo 'CPKTW110', untuk potongan diskon 50%, tersedia");
                     }
-                } else if (diskonCB.compareTo(diskonPersenOff) > diskonPersenOff.compareTo(diskonCB) && diskonCB.compareTo(diskonOng) > diskonOng.compareTo(diskonCB)) {
-                    System.out.println("Promo 'MSBRO999', untuk potongan Cash Back");
-                    if (diskonPersenOff.compareTo(diskonOng) > diskonOng.compareTo(diskonPersenOff)) {
-                        System.out.println("Promo 'CPKTW110', untuk potongan diskon 50%");
-                        System.out.println("Promo 'HDEHHH555', untuk potongan ongkir");
-                    } else {
-                        System.out.println("Promo 'HDEHHH555', untuk potongan ongkir");
-                        System.out.println("Promo 'CPKTW110', untuk potongan diskon 50%");
-                    }
-                } else if (diskonOng.compareTo(diskonPersenOff) > diskonPersenOff.compareTo(diskonOng) && diskonOng.compareTo(diskonCB) > diskonCB.compareTo(diskonOng)) {
-                    System.out.println("Promo 'HDEHHH555', untuk potongan ongkir");
-                    if (diskonPersenOff.compareTo(diskonCB) > diskonCB.compareTo(diskonPersenOff)) {
-                        System.out.println("Promo 'CPKTW110', untuk potongan diskon 50%");
-                        System.out.println("Promo 'MSBRO999', untuk potongan Cash Back");
-                    } else {
-                        System.out.println("Promo 'MSBRO999', untuk potongan Cash Back");
-                        System.out.println("Promo 'CPKTW110', untuk potongan diskon 50%");
-                    }
+                }
+
+                if (diskonOng.isCustomerEligible(c) && diskonOng.isMinimumPriceEligible(o) && diskonOng.isShippingFeeEligible(or)) {
+                    System.out.println("Promo 'HDEHHH555', untuk potongan ongkir, tersedia");
                 }
 
                 System.out.println("\nGunakan Promo? ");
                 System.out.print("Promo code : ");
                 String code = sc.nextLine();
-
-                CustomerEligible c = new CustomerEligible(pme.getFullName(), lamaMember);
-                OrderEligible o = new OrderEligible(totalSemua, 40000);
-                OrderEligible or = new OrderEligible(Integer.toString(Ong), Integer.toString(5000));
                 Diskon d = new Diskon(code, berlakuSampai);
 
                 if (d.getPromoCode().equals("CPKTW110")) {
-                    if (diskonPersenOff.isCustomerEligible(c) && diskonPersenOff.isMinimumPriceEligible(o)) {
                         if (berlakuSampai == true) {
                             System.out.println("Promo diskon 50% berhasil diaplikasikan!");
                             System.out.println("\n=============================================================================");
@@ -164,13 +149,9 @@ public class Receipt extends Exception {
                         } else {
                             System.out.println("Promo expired!");
                         }
-                    } else {
-                        System.out.println("Promo tidak memenuhi syarat ketentuan!");
-                    }
 
                     //diskon CashBack
                 } else if (d.getPromoCode().equals("MSBRO999")) {
-                    if (diskonCB.isCustomerEligible(c) && diskonCB.isMinimumPriceEligible(o)) {
                         if (berlakuSampai == true) {
                             System.out.println("Promo cash back berhasil diaplikasikan!");
                             System.out.println("\n=============================================================================");
@@ -192,15 +173,11 @@ public class Receipt extends Exception {
                         } else {
                             System.out.println("Promo expired!");
                         }
-                    } else {
-                        System.out.println("Promo tidak memenuhi syarat ketentuan!");
-                    }
 
                     //promo freeong
                 } else if (d.getPromoCode().equals("HDEHHH555")) {
-                    if (diskonOng.isCustomerEligible(c) && diskonOng.isMinimumPriceEligible(o) && diskonOng.isShippingFeeEligible(or)) {
                         if (berlakuSampai == true) {
-                            System.out.println("Promo cash back berhasil diaplikasikan!");
+                            System.out.println("Promo ongkir berhasil diaplikasikan!");
                             System.out.println("\n=============================================================================");
                             System.out.println("No. Pesanan : " + nomorPesanan);
                             System.out.println("Nama pelanggan : " + pme.getFullName());
@@ -220,9 +197,6 @@ public class Receipt extends Exception {
                         } else {
                             System.out.println("Promo expired!");
                         }
-                    } else {
-                        System.out.println("Promo tidak memenuhi syarat ketentuan!");
-                    }
                 } else {
                     System.out.println("Promo tidak ditemukan!");
                 }
@@ -280,7 +254,7 @@ public class Receipt extends Exception {
                 System.out.println("(1 = Makanan || 2 = Minuman)");
                 System.out.print("Jenis pesanan : ");
                 jenisPesan[i] = sc.nextLine();
-                //error exception==========================
+                //exception code try catch=========================================================== Exception
                 try {
                     System.out.print("Kode nama pesanan : ");
                     input = sc.nextLine();
@@ -292,6 +266,8 @@ public class Receipt extends Exception {
                     System.out.println(e.getMessage());
                     System.exit(0);
                 }
+
+                //exception code try catch=========================================================== Exception
                 System.out.print("Jumlah Beli : ");
                 jumlahPesanan[i] = sc.nextInt();
                 System.out.print("Harga : ");
